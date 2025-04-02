@@ -1,4 +1,4 @@
-package ostro.veda.ov_auth.security;
+package io.github.jotabrc.security;
 
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package ostro.veda.ov_auth.security;
+package io.github.jotabrc.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
