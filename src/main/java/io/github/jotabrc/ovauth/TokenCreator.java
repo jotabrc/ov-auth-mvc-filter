@@ -18,6 +18,13 @@ public class TokenCreator {
     public static final String HEADER_SECURE_ORIGIN = "X-Secure-Origin";
     public static final String ROLES_AUTHORITIES = "authorities";
 
+    /**
+     * Creates JWT Bearer token.
+     * @param prefix Token prefix defined in TokenConfig class.
+     * @param key Secret Secure key.
+     * @param tokenObject Object with token information to use in JWT creation.
+     * @return
+     */
     public static String create(String prefix, String key, TokenObject tokenObject) {
 
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
@@ -32,6 +39,18 @@ public class TokenCreator {
                 .compact();
         return prefix + " " + token;
     }
+
+    /**
+     * Decode received JWT token and return TokenObject details.
+     * @param token Received JWT.
+     * @param prefix Token prefix defined in TokenConfig class.
+     * @param key Secret Secure key.
+     * @return
+     * @throws ExpiredJwtException
+     * @throws UnsupportedJwtException
+     * @throws MalformedJwtException
+     * @throws SignatureException
+     */
     public static TokenObject create(String token, String prefix, String key)
             throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
 

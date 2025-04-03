@@ -11,6 +11,14 @@ import java.util.Base64;
 
 public class HeaderSecurity {
 
+    /**
+     * Encode received header data for matching with encoded header.
+     * @param data X-Secure-Data header received with JWT Token.
+     * @param header X-Secure-Data header received with JWT Token.
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws AccessDeniedException
+     */
     public static void compare(String data, String header) throws NoSuchAlgorithmException, InvalidKeyException, AccessDeniedException {
         String secretKey = System.getenv("HEADER_KEY");
         final String algorithm = "HmacSHA256";

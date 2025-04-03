@@ -25,6 +25,14 @@ import java.util.stream.Collectors;
 @Component
 public class TokenGlobalFilter extends OncePerRequestFilter {
 
+    /**
+     * Checks if requests contains valid Headers.
+     * @param request Received request to be checked.
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
