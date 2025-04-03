@@ -1,4 +1,4 @@
-package io.github.jotabrc.security;
+package io.github.jotabrc.ovauth;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -12,31 +12,33 @@ import java.security.SignatureException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JWTCreator {
+public class TokenCreator {
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_SECURE_DATA = "X-Secure-Data";
+    public static final String HEADER_SECURE_ORIGIN = "X-Secure-Origin";
     public static final String ROLES_AUTHORITIES = "authorities";
 
-    public static String create(String prefix, String key, JWTObject jwtObject) {
+    public static String create(String prefix, String key, TokenObject tokenObject) {
 
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
         SecretKey signingKey = new SecretKeySpec(keyBytes, "HmacSHA512");
 
         String token = Jwts.builder()
-                .subject(jwtObject.getSubject())
-                .issuedAt(jwtObject.getIssuedAt())
-                .expiration(jwtObject.getExpiration())
-                .claim(ROLES_AUTHORITIES, checkRoles(jwtObject.getRoles()))
+                .subject(tokenObject.getSubject())
+                .issuedAt(tokenObject.getIssuedAt())
+                .expiration(tokenObject.getExpiration())
+                .claim(ROLES_AUTHORITIES, checkRoles(tokenObject.getRoles()))
                 .signWith(signingKey)
                 .compact();
         return prefix + " " + token;
     }
-    public static JWTObject create(String token, String prefix, String key)
+    public static TokenObject create(String token, String prefix, String key)
             throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
 
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
         SecretKey signingKey = new SecretKeySpec(keyBytes, "HmacSHA512");
 
-        JWTObject object = new JWTObject();
+        TokenObject object = new TokenObject();
         token = token.replace(prefix, "");
 
         var claims = Jwts.parser()

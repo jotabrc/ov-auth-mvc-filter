@@ -1,4 +1,4 @@
-package io.github.jotabrc.security;
+package io.github.jotabrc.ovauth;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class JWTObject {
+public class TokenObject {
     private String subject;
     private Date issuedAt;
     private Date expiration;

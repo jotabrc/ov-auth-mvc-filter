@@ -1,13 +1,15 @@
-package io.github.jotabrc.security;
+package io.github.jotabrc.ovauth;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.InvalidKeyException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,21 +17,38 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class JWTFilter extends OncePerRequestFilter {
+public class TokenGlobalFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token =  request.getHeader(JWTCreator.HEADER_AUTHORIZATION);
+
+        String headerData =  request.getHeader(TokenCreator.HEADER_SECURE_DATA);
+        String headerOrigin =  request.getHeader(TokenCreator.HEADER_SECURE_ORIGIN);
+
+        try {
+            if (headerData != null && headerOrigin != null) {
+                HeaderSecurity.compare(headerData, headerOrigin);
+            } else {
+                throw new AccessDeniedException("Access denied");
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeyException | AccessDeniedException |
+                 java.security.InvalidKeyException e) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            return;
+        }
+
+        String token =  request.getHeader(TokenCreator.HEADER_AUTHORIZATION);
         try {
             if(token != null && !token.isEmpty()) {
                 token = token.substring(7).trim();
-                JWTObject tokenObject = JWTCreator.create(token, SecurityConfig.PREFIX, SecurityConfig.KEY);
+                TokenObject tokenObject = TokenCreator.create(token, TokenConfig.PREFIX, TokenConfig.KEY);
 
                 List<SimpleGrantedAuthority> authorities = authorities(tokenObject.getRoles());
 
@@ -41,7 +60,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(userToken);
 
-            }else {
+            } else {
                 SecurityContextHolder.clearContext();
             }
             filterChain.doFilter(request, response);
