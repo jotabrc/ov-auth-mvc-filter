@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.github.jotabrc.ovauth","l":"HeaderSecurity"},{"p":"io.github.jotabrc.ovauth","l":"TokenConfig"},{"p":"io.github.jotabrc.ovauth","l":"TokenCreator"},{"p":"io.github.jotabrc.ovauth","l":"TokenGlobalFilter"},{"p":"io.github.jotabrc.ovauth","l":"TokenObject"}];updateSearchResults();

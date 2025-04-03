@@ -12,7 +12,7 @@ import java.util.Base64;
 public class HeaderSecurity {
 
     /**
-     * Encode received header data for matching with encoded header.
+     * Encoded received header data for matching with encoded header.
      * @param data X-Secure-Data header received with JWT Token.
      * @param header X-Secure-Data header received with JWT Token.
      * @throws NoSuchAlgorithmException
