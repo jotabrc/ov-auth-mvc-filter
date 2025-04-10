@@ -1,4 +1,4 @@
-package io.github.jotabrc.ovauth;
+package io.github.jotabrc.ovauth.token;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -23,7 +23,7 @@ public class TokenCreator {
      * @param prefix Token prefix defined in TokenConfig class.
      * @param key Secret Secure key.
      * @param tokenObject Object with token information to use in JWT creation.
-     * @return
+     * @return Token String.
      */
     public static String create(String prefix, String key, TokenObject tokenObject) {
 
@@ -57,7 +57,6 @@ public class TokenCreator {
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
         SecretKey signingKey = new SecretKeySpec(keyBytes, "HmacSHA512");
 
-        TokenObject object = new TokenObject();
         token = token.replace(prefix, "");
 
         var claims = Jwts.parser()
@@ -66,11 +65,13 @@ public class TokenCreator {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        object.setSubject(claims.getSubject());
-        object.setExpiration(claims.getExpiration());
-        object.setIssuedAt(claims.getIssuedAt());
-        object.setRoles((List) claims.get(ROLES_AUTHORITIES));
-        return object;
+        return TokenObject
+                .builder()
+                .subject(claims.getSubject())
+                .expiration(claims.getExpiration())
+                .issuedAt(claims.getIssuedAt())
+                .roles((List<String>) claims.get(ROLES_AUTHORITIES))
+                .build();
 
     }
 

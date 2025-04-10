@@ -1,4 +1,4 @@
-package io.github.jotabrc.ovauth;
+package io.github.jotabrc.ovauth.header;
 
 import org.springframework.security.access.AccessDeniedException;
 
@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+@Deprecated
 public class HeaderSecurity {
 
     /**

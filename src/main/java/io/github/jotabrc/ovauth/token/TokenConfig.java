@@ -1,4 +1,4 @@
-package io.github.jotabrc.ovauth;
+package io.github.jotabrc.ovauth.token;
 
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

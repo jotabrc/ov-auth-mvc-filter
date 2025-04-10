@@ -1,5 +1,6 @@
-package io.github.jotabrc.ovauth;
+package io.github.jotabrc.ovauth.token;
 
+import io.github.jotabrc.ovauth.header.SecurityHeader;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -26,9 +27,9 @@ import java.util.stream.Collectors;
 public class TokenGlobalFilter extends OncePerRequestFilter {
 
     /**
-     * Checks if requests contains valid Headers.
+     * Validate headers and tokens.
      * @param request Received request to be checked.
-     * @param response
+     * @param response Response to be returned.
      * @param filterChain
      * @throws ServletException
      * @throws IOException
@@ -42,7 +43,7 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
 
         try {
             if (headerData != null && headerOrigin != null) {
-                HeaderSecurity.compare(headerData, headerOrigin);
+                SecurityHeader.compare(headerData, headerOrigin);
             } else {
                 throw new AccessDeniedException("Access denied");
             }

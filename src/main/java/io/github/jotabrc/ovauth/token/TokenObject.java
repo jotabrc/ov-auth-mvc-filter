@@ -1,11 +1,15 @@
-package io.github.jotabrc.ovauth;
+package io.github.jotabrc.ovauth.token;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.List;
 
+@Accessors(chain = true)
+@Builder
 @Getter
 @Setter
 public class TokenObject {
