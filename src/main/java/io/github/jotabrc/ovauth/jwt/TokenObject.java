@@ -1,4 +1,4 @@
-package io.github.jotabrc.ovauth.token;
+package io.github.jotabrc.ovauth.jwt;
 
 import lombok.Builder;
 import lombok.Getter;

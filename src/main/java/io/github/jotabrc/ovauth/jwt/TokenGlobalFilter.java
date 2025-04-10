@@ -1,6 +1,7 @@
-package io.github.jotabrc.ovauth.token;
+package io.github.jotabrc.ovauth.jwt;
 
-import io.github.jotabrc.ovauth.header.SecurityHeader;
+import io.github.jotabrc.ovauth.header.Header;
+import io.github.jotabrc.ovauth.token.SecurityHeader;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -38,8 +39,8 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String headerData =  request.getHeader(TokenCreator.HEADER_SECURE_DATA);
-        String headerOrigin =  request.getHeader(TokenCreator.HEADER_SECURE_ORIGIN);
+        String headerData =  request.getHeader(Header.X_SECURE_DATA.getHeader());
+        String headerOrigin =  request.getHeader(Header.X_SECURE_ORIGIN.getHeader());
 
         try {
             if (headerData != null && headerOrigin != null) {
@@ -53,7 +54,7 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token =  request.getHeader(TokenCreator.HEADER_AUTHORIZATION);
+        String token =  request.getHeader(Header.HEADER_AUTHORIZATION.getHeader());
         try {
             if(token != null && !token.isEmpty()) {
                 token = token.substring(7).trim();

@@ -1,5 +1,6 @@
-package io.github.jotabrc.ovauth.token;
+package io.github.jotabrc.ovauth.jwt;
 
+import io.github.jotabrc.ovauth.header.Header;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -13,10 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TokenCreator {
-    public static final String HEADER_AUTHORIZATION = "Authorization";
-    public static final String HEADER_SECURE_DATA = "X-Secure-Data";
-    public static final String HEADER_SECURE_ORIGIN = "X-Secure-Origin";
-    public static final String ROLES_AUTHORITIES = "authorities";
 
     /**
      * Creates JWT Bearer token.
@@ -34,7 +31,7 @@ public class TokenCreator {
                 .subject(tokenObject.getSubject())
                 .issuedAt(tokenObject.getIssuedAt())
                 .expiration(tokenObject.getExpiration())
-                .claim(ROLES_AUTHORITIES, checkRoles(tokenObject.getRoles()))
+                .claim(Header.ROLES_AUTHORITIES.getHeader(), checkRoles(tokenObject.getRoles()))
                 .signWith(signingKey)
                 .compact();
         return prefix + " " + token;
@@ -70,7 +67,7 @@ public class TokenCreator {
                 .subject(claims.getSubject())
                 .expiration(claims.getExpiration())
                 .issuedAt(claims.getIssuedAt())
-                .roles((List<String>) claims.get(ROLES_AUTHORITIES))
+                .roles((List<String>) claims.get(Header.ROLES_AUTHORITIES.getHeader()))
                 .build();
 
     }

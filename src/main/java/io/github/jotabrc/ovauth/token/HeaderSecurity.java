@@ -1,4 +1,4 @@
-package io.github.jotabrc.ovauth.header;
+package io.github.jotabrc.ovauth.token;
 
 import org.springframework.security.access.AccessDeniedException;
 
