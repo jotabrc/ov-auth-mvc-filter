@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.github.jotabrc</groupId>
 	<artifactId>ov-auth</artifactId>
-	<version>3.0.0</version>
+	<version>3.1.1</version>
 	<name>ov-auth</name>
 	<description>Token auth</description>
 	<url>https://github.com/jotabrc/ov-auth</url>

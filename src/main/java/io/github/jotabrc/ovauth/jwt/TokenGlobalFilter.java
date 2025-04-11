@@ -21,11 +21,25 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class TokenGlobalFilter extends OncePerRequestFilter {
+
+    private static final String[] BYPASS_LIST = {
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/h2-console",
+            "/h2-console/**"
+    };
 
     /**
      * Validate headers and tokens.
@@ -38,6 +52,13 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+
+        if (Arrays.stream(BYPASS_LIST).anyMatch(path::startsWith)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String headerData =  request.getHeader(Header.X_SECURE_DATA.getHeader());
         String headerOrigin =  request.getHeader(Header.X_SECURE_ORIGIN.getHeader());
