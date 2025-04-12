@@ -36,6 +36,10 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
             "/configuration/security",
             "/swagger-ui.html",
             "/swagger-ui/**",
+            "/swagger-user/**",
+            "/swagger-product/**",
+            "/swagger-inventory/**",
+            "/swagger-order/**",
             "/webjars/**",
             "/h2-console",
             "/h2-console/**"
