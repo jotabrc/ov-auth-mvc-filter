@@ -30,6 +30,10 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
 
     private static final String[] PATH_WHITELIST = {
             "/v3/api-docs/",
+            "/v3/api-docs-user/",
+            "/v3/api-docs-product/",
+            "/v3/api-docs-inventory/",
+            "/v3/api-docs-order/",
             "/swagger-resources",
             "/swagger-resources/",
             "/configuration/ui",
