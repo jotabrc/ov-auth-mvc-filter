@@ -28,21 +28,24 @@ import java.util.stream.Collectors;
 @Component
 public class TokenGlobalFilter extends OncePerRequestFilter {
 
-    private static final String[] BYPASS_LIST = {
-            "/v3/api-docs/**",
+    private static final String[] PATH_WHITELIST = {
+            "/v3/api-docs/",
             "/swagger-resources",
-            "/swagger-resources/**",
+            "/swagger-resources/",
             "/configuration/ui",
             "/configuration/security",
             "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/swagger-user/**",
-            "/swagger-product/**",
-            "/swagger-inventory/**",
-            "/swagger-order/**",
-            "/webjars/**",
+            "/swagger-ui/",
+            "/swagger-user/",
+            "/swagger-product/",
+            "/swagger-inventory/",
+            "/swagger-order/",
+            "/webjars/",
             "/h2-console",
-            "/h2-console/**"
+            "/h2-console/",
+            "/h2-console-user",
+            "/h2-console-inventory",
+            "/h2-console-order"
     };
 
     /**
@@ -59,7 +62,7 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (Arrays.stream(BYPASS_LIST).anyMatch(path::startsWith)) {
+        if (Arrays.stream(PATH_WHITELIST).anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }
