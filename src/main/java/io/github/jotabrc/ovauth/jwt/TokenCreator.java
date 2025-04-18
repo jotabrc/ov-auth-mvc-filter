@@ -24,8 +24,7 @@ public class TokenCreator {
      */
     public static String create(String prefix, String key, TokenObject tokenObject) {
 
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        SecretKey signingKey = new SecretKeySpec(keyBytes, "HmacSHA512");
+        SecretKey signingKey = getSecretKey(key);
 
         String token = Jwts.builder()
                 .subject(tokenObject.getSubject())
@@ -51,8 +50,7 @@ public class TokenCreator {
     public static TokenObject create(String token, String prefix, String key)
             throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
 
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        SecretKey signingKey = new SecretKeySpec(keyBytes, "HmacSHA512");
+        SecretKey signingKey = getSecretKey(key);
 
         token = token.replace(prefix, "");
 
@@ -74,5 +72,11 @@ public class TokenCreator {
 
     private static List<String> checkRoles(List<String> roles) {
         return roles.stream().map(s -> "ROLE_".concat(s.replaceAll("ROLE_",""))).collect(Collectors.toList());
+    }
+
+    private static SecretKey getSecretKey(String key) {
+        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+        SecretKey signingKey = new SecretKeySpec(keyBytes, "HmacSHA512");
+        return signingKey;
     }
 }
