@@ -2,17 +2,14 @@ package io.github.jotabrc.ovauth.jwt;
 
 import io.github.jotabrc.ovauth.config.PropertiesWhitelistLoaderImpl;
 import io.github.jotabrc.ovauth.header.Header;
-import io.github.jotabrc.ovauth.token.SecurityHeader;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.InvalidKeyException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,9 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,8 +55,9 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
 
     /**
      * Validate headers and tokens.
-     * @param request Received request to be checked.
-     * @param response Response to be returned.
+     *
+     * @param request     Received request to be checked.
+     * @param response    Response to be returned.
      * @param filterChain
      * @throws ServletException
      * @throws IOException
@@ -68,31 +66,57 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        if (whitelistCheck(request, response, filterChain)) return;
+        if (validateXSecureToken(request, response)) return;
+
+        validateAuthorizationHeader(request, response, filterChain);
+    }
+
+    private boolean whitelistCheck(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String path = request.getRequestURI();
 
         if (Arrays.stream(WHITELIST).anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
-            return;
+            return true;
         }
+        return false;
+    }
 
-        String headerData =  request.getHeader(Header.X_SECURE_DATA.getHeader());
-        String headerOrigin =  request.getHeader(Header.X_SECURE_ORIGIN.getHeader());
+    private List<SimpleGrantedAuthority> authorities(List<String> roles) {
+        return roles.stream().map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
 
-        try {
-            if (headerData != null && headerOrigin != null) {
-                SecurityHeader.compare(headerData, headerOrigin);
-            } else {
-                throw new AccessDeniedException("Access denied");
+    private boolean validateXSecureToken(HttpServletRequest request, HttpServletResponse response) {
+        String xSecureToken = request.getHeader(Header.X_SECURE_TOKEN.getHeader());
+
+        if (xSecureToken != null && !xSecureToken.isEmpty()) {
+            try {
+                xSecureToken = xSecureToken.substring(7).trim();
+                TokenObject tokenObject = TokenCreator.decode(xSecureToken, TokenConfig.PREFIX, TokenConfig.KEY);
+                Date currentDate = new Date(System.currentTimeMillis());
+                if (
+                        !tokenObject.getSubject().equals("GATEWAY") &&
+                                tokenObject.getRoles().stream().noneMatch(r -> r.equals("SYSTEM")) &&
+                                tokenObject.getExpiration().after(currentDate)
+                ) {
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    return true;
+                }
+            } catch (SignatureException e) {
+                throw new RuntimeException(e);
             }
-        } catch (NoSuchAlgorithmException | InvalidKeyException | AccessDeniedException |
-                 java.security.InvalidKeyException e) {
+        } else {
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            return;
+            return true;
         }
+        return false;
+    }
 
-        String token =  request.getHeader(Header.HEADER_AUTHORIZATION.getHeader());
+    private void validateAuthorizationHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String token = request.getHeader(Header.HEADER_AUTHORIZATION.getHeader());
         try {
-            if(token != null && !token.isEmpty()) {
+            if (token != null && !token.isEmpty()) {
                 token = token.substring(7).trim();
                 TokenObject tokenObject = TokenCreator.decode(token, TokenConfig.PREFIX, TokenConfig.KEY);
 
@@ -113,10 +137,5 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
         }
-    }
-
-    private List<SimpleGrantedAuthority> authorities(List<String> roles){
-        return roles.stream().map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
     }
 }

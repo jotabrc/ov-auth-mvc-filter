@@ -9,6 +9,7 @@ public enum Header {
 
     X_SECURE_DATA("X-Secure-Data"),
     X_SECURE_ORIGIN("X-Secure-Origin"),
+    X_SECURE_TOKEN("X-Secure-Token"),
     HEADER_AUTHORIZATION("Authorization"),
     ROLES_AUTHORITIES("authorities");
 
