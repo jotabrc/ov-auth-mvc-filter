@@ -1,6 +1,8 @@
 package io.github.jotabrc.ovauth.config;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -12,24 +14,22 @@ import java.util.Properties;
 @Component
 public class PropertiesWhitelistLoaderImpl implements PropertiesWhitelistLoader {
 
-    public static Map<String, String> whitelist = new HashMap<>();
+    @Value("classpath:ov-auth.properties")
+    private Resource resource;
+
+    public static Map<String, String> WHITELIST = new HashMap<>();
 
     @PostConstruct
     public void init() {
-        loadProperties();
+        loadProperties(resource);
     }
 
     @Override
-    public void loadProperties() {
-        loadProperties("ov-auth.properties");
-    }
-
-    @Override
-    public void loadProperties(String path) {
-        try (InputStream stream = getClass().getClassLoader().getResourceAsStream(path)) {
+    public void loadProperties(Resource resource) {
+        try (InputStream stream = resource.getInputStream()) {
             Properties properties = new Properties();
             properties.load(stream);
-            properties.forEach((k,v) -> whitelist.put(k.toString(), v.toString()));
+            properties.forEach((k,v) -> WHITELIST.put(k.toString(), v.toString()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,7 +1,8 @@
 package io.github.jotabrc.ovauth.config;
 
+import org.springframework.core.io.Resource;
+
 public interface PropertiesWhitelistLoader {
 
-    void loadProperties();
-    void loadProperties(final String path);
+    void loadProperties(final Resource resource);
 }

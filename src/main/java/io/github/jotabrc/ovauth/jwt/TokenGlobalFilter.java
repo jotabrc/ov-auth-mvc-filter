@@ -54,7 +54,7 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
             "/h2-console-order"
     };
 
-    private static final String[] WHITELIST = PropertiesWhitelistLoaderImpl.whitelist.values().toArray(new String[0]);
+    private static final String[] WHITELIST = PropertiesWhitelistLoaderImpl.WHITELIST.values().toArray(new String[0]);
 
     /**
      * Validate headers and tokens.
