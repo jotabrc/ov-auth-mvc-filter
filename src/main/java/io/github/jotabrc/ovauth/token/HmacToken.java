@@ -9,8 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-@Deprecated
-public class SecurityHeader {
+public class HmacToken {
 
     /**
      * Creates Token String using environment variable HEADER_KEY.

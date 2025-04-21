@@ -47,7 +47,7 @@ public class TokenCreator {
      * @throws MalformedJwtException
      * @throws SignatureException
      */
-    public static TokenObject create(String token, String prefix, String key)
+    public static TokenObject decode(String token, String prefix, String key)
             throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
 
         SecretKey signingKey = getSecretKey(key);

@@ -8,4 +8,7 @@ Creates JWT and SHA256 Tokens.
   - User whitelist for Swagger and H2 endpoints bypass.
 
 #### Token
-- `SecurityHeader` Create and validate `HmacSHA256` tokens.
+- `HmacToken` Create and validate `HmacSHA256` tokens.
+
+### Requirements
+

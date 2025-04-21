@@ -1,5 +1,6 @@
 package io.github.jotabrc.ovauth.jwt;
 
+import io.github.jotabrc.ovauth.config.PropertiesWhitelistLoaderImpl;
 import io.github.jotabrc.ovauth.header.Header;
 import io.github.jotabrc.ovauth.token.SecurityHeader;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenGlobalFilter extends OncePerRequestFilter {
 
+    @Deprecated
     private static final String[] PATH_WHITELIST = {
             "/v3/api-docs/",
             "/v3/api-docs-user/",
@@ -52,6 +54,8 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
             "/h2-console-order"
     };
 
+    private static final String[] WHITELIST = PropertiesWhitelistLoaderImpl.whitelist.values().toArray(new String[0]);
+
     /**
      * Validate headers and tokens.
      * @param request Received request to be checked.
@@ -66,7 +70,7 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (Arrays.stream(PATH_WHITELIST).anyMatch(path::startsWith)) {
+        if (Arrays.stream(WHITELIST).anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -90,7 +94,7 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
         try {
             if(token != null && !token.isEmpty()) {
                 token = token.substring(7).trim();
-                TokenObject tokenObject = TokenCreator.create(token, TokenConfig.PREFIX, TokenConfig.KEY);
+                TokenObject tokenObject = TokenCreator.decode(token, TokenConfig.PREFIX, TokenConfig.KEY);
 
                 List<SimpleGrantedAuthority> authorities = authorities(tokenObject.getRoles());
 
