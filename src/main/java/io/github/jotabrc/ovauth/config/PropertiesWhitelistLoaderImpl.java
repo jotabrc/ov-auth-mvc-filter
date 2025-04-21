@@ -3,8 +3,8 @@ package io.github.jotabrc.ovauth.config;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -26,7 +26,7 @@ public class PropertiesWhitelistLoaderImpl implements PropertiesWhitelistLoader 
 
     @Override
     public void loadProperties(String path) {
-        try (FileInputStream stream = new FileInputStream(path)) {
+        try (InputStream stream = getClass().getClassLoader().getResourceAsStream(path)) {
             Properties properties = new Properties();
             properties.load(stream);
             properties.forEach((k,v) -> whitelist.put(k.toString(), v.toString()));
