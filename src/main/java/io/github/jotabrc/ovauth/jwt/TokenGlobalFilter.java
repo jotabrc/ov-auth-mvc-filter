@@ -26,31 +26,6 @@ import java.util.stream.Collectors;
 @Component
 public class TokenGlobalFilter extends OncePerRequestFilter {
 
-    @Deprecated
-    private static final String[] PATH_WHITELIST = {
-            "/v3/api-docs/",
-            "/v3/api-docs-user/",
-            "/v3/api-docs-product/",
-            "/v3/api-docs-inventory/",
-            "/v3/api-docs-order/",
-            "/swagger-resources",
-            "/swagger-resources/",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/swagger-ui/",
-            "/swagger-user/",
-            "/swagger-product/",
-            "/swagger-inventory/",
-            "/swagger-order/",
-            "/webjars/",
-            "/h2-console",
-            "/h2-console/",
-            "/h2-console-user",
-            "/h2-console-inventory",
-            "/h2-console-order"
-    };
-
     private static final String[] WHITELIST = PropertiesWhitelistLoaderImpl.WHITELIST.values().toArray(new String[0]);
 
     /**
@@ -129,9 +104,6 @@ public class TokenGlobalFilter extends OncePerRequestFilter {
                                 authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(userToken);
-
-            } else {
-                SecurityContextHolder.clearContext();
             }
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException e) {

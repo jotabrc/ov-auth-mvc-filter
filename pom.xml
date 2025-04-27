@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.github.jotabrc</groupId>
-	<artifactId>ov-auth</artifactId>
-	<version>3.4.0</version>
-	<name>ov-auth</name>
-	<description>Token auth</description>
-	<url>https://github.com/jotabrc/ov-auth</url>
+	<artifactId>ov-auth-mvc-filter</artifactId>
+	<version>1.0.0</version>
+	<name>ov-auth-mvc-filter</name>
+	<description>Token auth filter</description>
+	<url>https://github.com/jotabrc/ov-auth-mvc-filter</url>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -29,41 +29,14 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>https://github.com/jotabrc/ov-auth.git</url>
-		<connection>scm:git:git://github.com/jotabrc/ov-auth.git</connection>
-		<developerConnection>scm:git:ssh://github.com/jotabrc/ov-auth.git</developerConnection>
+		<url>https://github.com/jotabrc/ov-auth-mvc-filter.git</url>
+		<connection>scm:git:git://github.com/jotabrc/ov-auth-mvc-filter.git</connection>
+		<developerConnection>scm:git:ssh://github.com/jotabrc/ov-auth-mvc-filter.git</developerConnection>
 	</scm>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<!-- JWT -->
-<!--		<dependency>-->
-<!--			<groupId>io.jsonwebtoken</groupId>-->
-<!--			<artifactId>jjwt</artifactId>-->
-<!--			<version>0.12.3</version>-->
-<!--		</dependency>-->
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-api</artifactId>
-			<version>0.12.6</version>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.6</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId>
-			<version>0.12.6</version>
-			<scope>runtime</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -80,9 +53,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
+			<groupId>io.github.jotabrc</groupId>
+			<artifactId>ov-auth</artifactId>
+			<version>4.0.0</version>
 		</dependency>
 	</dependencies>
 
